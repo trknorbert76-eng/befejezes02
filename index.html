@@ -1,53 +1,138 @@
 <!doctype html>
 <html lang="hu">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Befejezés 02</title>
-  <style>
-    html, body { height: 100%; }
-    body {
-      margin: 0;
-      background: #000;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Befejezés 02</title>
 
-    .wrap{
-      width: min(960px, 100%);
-      margin-top: 40px;
-      padding: 0 12px;
-      box-sizing: border-box;
-    }
+<style>
+html, body { height: 100%; }
 
-    .video{
-      position: relative;
-      width: 100%;
-      padding-bottom: 56.25%;
-      height: 0;
-    }
+body {
+  margin: 0;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
 
-    .video iframe{
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-  </style>
+.wrap{
+  width: min(960px, 100%);
+  margin-top: 40px;
+  padding: 0 12px;
+  box-sizing: border-box;
+}
+
+.video{
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.video iframe{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* SZÖVEG OVERLAY */
+.overlay{
+  position: absolute;
+  inset: 0;
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  padding-bottom: 8%;
+  pointer-events:none;
+}
+
+.textBox{
+  text-align:center;
+  color:white;
+  font-size:18px;
+  line-height:1.6;
+  opacity:0;
+  transition:opacity 1.2s ease;
+  max-width:80%;
+}
+
+.textBox.show{ opacity:1; }
+.textBox.hide{ opacity:0; }
+</style>
 </head>
 
 <body>
-  <div class="wrap">
-    <div class="video">
-      <iframe
-        src="https://www.youtube.com/embed/5UI77ZQddi4"
-        title="Befejezés 02"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
+
+<div class="wrap">
+  <div class="video">
+    <iframe
+      id="player"
+      src="https://www.youtube.com/embed/5UI77ZQddi4?enablejsapi=1&rel=0&modestbranding=1"
+      title="Befejezés 02"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      allowfullscreen>
+    </iframe>
+
+    <div class="overlay">
+      <div id="text" class="textBox">
+        Ez a történet nem azt méri,<br>
+        hogy jó vagy rossz ember vagy.<br><br>
+
+        Bárhova is kerültél a teszt után,<br>
+        nem minősít.<br><br>
+
+        A két lator is egyforma volt.<br><br>
+
+        Csak a végső szorításban<br>
+        másképp látták a valóságot.<br><br>
+
+        Az egyik még menteni akarta magát.<br>
+        A másik már vállalta a helyzetét.
+      </div>
     </div>
+
   </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+var player;
+var shown = false;
+var hidden = false;
+
+var SHOW_AT = 140;  // 2:20
+var HIDE_AT = 176;  // 2:56
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    events: { 'onReady': onReady }
+  });
+}
+
+function onReady() {
+  setInterval(function () {
+    if (!player) return;
+
+    var t = 0;
+    try { t = player.getCurrentTime(); } catch (e) { return; }
+
+    if (t >= SHOW_AT && !shown) {
+      document.getElementById("text").classList.add("show");
+      shown = true;
+    }
+
+    if (t >= HIDE_AT && !hidden) {
+      document.getElementById("text").classList.remove("show");
+      document.getElementById("text").classList.add("hide");
+      hidden = true;
+    }
+
+  }, 500);
+}
+</script>
+
 </body>
 </html>
