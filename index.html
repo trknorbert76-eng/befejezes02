@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Befejezés 02</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <style>
 html, body { height: 100%; }
@@ -73,9 +74,7 @@ body {
 
 <div class="wrap">
   <div class="video">
-    <video id="mainVideo" controls autoplay playsinline>
-      <source src="https://res.cloudinary.com/dgcumjeuj/video/upload/v1774558618/T%C3%B6r%C3%B6k_Norbert_befejez%C3%A9s_02_jish26.mp4" type="video/mp4">
-    </video>
+    <video id="mainVideo" controls playsinline></video>
     <img id="endImage" src="jezus.png" alt="">
   </div>
 
@@ -115,8 +114,18 @@ const video = document.getElementById("mainVideo");
 const closingText = document.getElementById("closingText");
 const endImage = document.getElementById("endImage");
 
-const SHOW_AT = 140;    // 2:20
-const END_SHOW_AT = 170; // 2:50 kép
+const videoSrc = "https://vz-607e77fc-703.b-cdn.net/7ca04832-94d4-4758-ad34-b3e7b33c706d/playlist.m3u8";
+
+if (video.canPlayType('application/vnd.apple.mpegurl')) {
+  video.src = videoSrc;
+} else if (Hls.isSupported()) {
+  const hls = new Hls();
+  hls.loadSource(videoSrc);
+  hls.attachMedia(video);
+}
+
+const SHOW_AT = 140;
+const END_SHOW_AT = 170;
 
 let started = false;
 let shown = false;
@@ -157,6 +166,12 @@ video.addEventListener("ended", () => {
     track("video_finish_left");
     finished = true;
   }
+});
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    video.play().catch(() => {});
+  }, 300);
 });
 </script>
 
